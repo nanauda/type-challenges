@@ -32,7 +32,7 @@ type Length<T extends readonly any[]> = T["length"]
 type A = { foo: number };
 type Foo = A["foo"];
 
-// ②配列型[number];
+// ②配列型[number]; ※numberになにか数字をいれてつかうわけではない。numberときたときは配列の一要素の型を扱っていると考える
 type StringArray = string[];
 type T = StringArray[number]; // number番目の要素の型を参照する
 // const strArr = ["a", "b"]
@@ -44,3 +44,27 @@ const method = (arr: StringArray): T => {
 const method2 = (arr: StringArray): StringArray["length"] => {
   return arr.length
 }
+
+type Foo = { a: number; b: string; c: boolean };
+type T = Foo[keyof Foo];
+
+/* _____________ 発展 typeof、keyofとの併用 _____________ */
+
+const stateList = ["open", "closed"] as const;
+type OpenCloseArrayType = typeof stateList;
+type State = OpenCloseArrayType[number];
+
+// State 型を使用した変数定義
+const currentState: State = "open"; // OK
+const nextState: State = "closed"; // OK
+
+type Bar = { age: number; name: string; isSingle: boolean };
+type KeyOfBar = keyof Bar
+const keyOk: KeyOfBar = 'age'
+// const keyNg: KeyOfBar = 'address' NG
+type TypeOfOnePropatyInBaR = Bar[keyof Bar];
+// 動くもののどういうタイミングで使うのか不明
+const KidName: TypeOfOnePropatyInBaR = 'Taro'
+// こっちのほうがいい気がする
+type NameType = Bar["name"]
+const KidNameBetter: NameType = 'Taro'
